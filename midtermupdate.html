@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en"><head>  
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <title>Computer Vision Class Project
+  | Georgia Institute of Technology | Fall 2019: CS 6476</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+<!-- Le styles -->  
+  <link href="css/bootstrap.css" rel="stylesheet">
+<style>
+body {
+padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+}
+.vis {
+color: #3366CC;
+}
+.data {
+color: #FF9900;
+}
+/* Add a black background color to the top navigation */
+.topnav {
+  background-color: #333;
+  overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+</style>
+  
+<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements --><!--[if lt IE 9]>
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+</head>
+
+<body>
+
+<div class="topnav">
+  <a class="active" href="index.html">Project Proposal</a>
+  <a href="midtermupdate.html">Mid-term Project Update</a>
+  <a href="finalupdate.html">Final Project Update</a>
+  <a href="#about">Project Video</a>
+</div>
+
+<div class="container">
+<div class="page-header">
+
+<!-- Title and Name --> 
+<h1>Kuzushiji Character Recognition</h1> 
+<span style="font-size: 20px; line-height: 1.5em;"><strong>Kaila Billie, Anant Joshi, Jeevanjot Singh, Sarmishta Velury</strong></span><br>
+<span style="font-size: 18px; line-height: 1.5em;">Fall 2019 CS 6476 Computer Vision: Class Project</span><br>
+<span style="font-size: 18px; line-height: 1.5em;">Georgia Institute of Technology</span>
+<hr>
+
+<!-- Goal -->
+<h2>Abstract</h2>
+
+<p>Given an image, we propose a deep learning model to detect Kuzushiji characters present on the page and transcribe them to contemporary Kanji. We use U-Nets to detect the Kuzushiji, i.e. find the centers and draw bounding boxes around the characters. We propose a CNN-based approach for Kuzushiji recognition. We compare our approach against two other approaches. The first is a classical CV approach using SIFT features for detection and an SVM for recognition. The second is a more complex approach that uses image contours for detection and CNNs for recognition.</p>
+<br><br>
+<!-- figure -->
+<!-- <h3>Teaser figure</h3> -->
+<!-- A figure that conveys the main idea behind the project or the main application being addressed. -->
+<br><br>
+<!-- Main Illustrative Figure --> 
+<div style="text-align: center;">
+<img style="height: 700px;" alt="" src="mainfig.png">
+</div>
+
+<br><br>
+<!-- Introduction -->
+<h2>Introduction</h2>
+
+<h4>What is Kuzushiji?</h4>
+<p>Kuzushiji, is an old Japanese cursive writing style. Over 3 million books, written in Kuzushiji are preserved today, waiting to be transcribed. However, only 0.01% of the native Japanese population can read Kuzushiji, making the process of manual translation hard. </p>
+
+<figure style="text-align: center;">
+  <img src="img1.png">
+  <figcaption><strong>Fig 1:</strong>  Image with Kuzushiji characters. </figcaption>
+</figure>
+
+<h4>Challenges in Kuzushiji recognition</h4>
+<p><strong>Large number of character types:</strong> The total number of unique characters in the Kuzushiji dataset is over 4300 and the dataset is highly unbalanced.</p>
+<p><strong>Hentaigana:</strong> Many characters which can only be written a single way in modern Japanese can be written in many different ways in Kuzushiji.</p>
+<p><strong>Similarity between characters:</strong> A few characters in Kuzushiji look very similar and it is hard to tell what character it is without considering the above character as context.</p>
+<p><strong>Connectedness and overlap between characters:</strong> Kuzushiji was written in a cursive script, and hence in many cases, characters are connected or overlap which can make the recognition task difficult.</p>
+<p><strong>Various layouts:</strong> The layout of Kuzushiji characters (while normally arranged into columns) does not follow a single simple rule, so it is not always trivial to express the characters as a sequence.</p>
+
+<figure style="text-align: center;">
+  <img src="img2.png">
+  <figcaption><strong>Fig 2:</strong> Kuzushiji-Kanji samples (Top) and stroke-based Modern Kanji versions (Bottom)</figcaption>
+</figure>
+
+<br><br>
+<!-- Approach -->
+<h2>Approach</h2>
+<img style="height: 580px; width:712px;" src="chart.png" >
+<h4>Stages</h4>
+<p>The project is divided into 3 main stages.</p>
+<ul>
+<li><h4>Preprocessing</h4>
+  Our preprocessing pipeline is.
+  <ul>
+    <li>Drop null values</li>
+    <li>Standard preprocessing for CNNs. (Randomly rotate, crop and normalize image)</li>
+  </ul>
+</li>
+<li><h4>Character Detection</h4>
+<ul>
+<li><strong>Baseline: </strong>Our baseline model uses contour detection to detect each character. We use OpenCV’s contour detection to detect the characters and compute bounding boxes around each character.</li>
+<li><strong>U-Net </strong>For our main implementation, we follow KuroNet (a recently published state of the art method) and use a U-Net for character detection.<br><br>
+  The model consists of a residual U-net with skip connections between each<br><br>
+  For this U-Net, we use the existing codebases:
+  <ol>
+  <li><a href="https://github.com/milesial/Pytorch-UNet">https://github.com/milesial/Pytorch-UNet</a></li>
+  <li><a href="https://github.com/usuyama/pytorch-unet">https://github.com/usuyama/pytorch-unet</a></li></ol>
+</li>
+For the evaluation, we modify the Kuzushiji competition metric defined in the Kuzushiji official repository: <br>
+<a href="https://gist.github.com/SohierDane/a90ef46d79808fe3afc70c80bae45972">https://gist.github.com/SohierDane/a90ef46d79808fe3afc70c80bae45972</a>
+</li>
+
+</ul>
+</li>
+<li>
+  <h4>Post Processing</h4>
+  After extracting bounded characters, we intend to threshold and scale all the characters to a standard size.
+</li>
+<li><h4>Character Recognition</h4>
+  <ul>
+    <li><strong>Classical implementation.</strong>
+      <ul>
+    <li>We use an approach used for character recognition in degraded stone carvings. In this, we calculate interest points using the maxima obtained from Difference of Gaussians (DoG). 
+We then calculate SIFT descriptors for each of the DoG points, and send them to an SVM, which classifies them as belonging to a particular character. 
+We also cluster the DoG points to find the centers of the characters. 
+The two parts above are combined to give the prediction for the character label.</li>
+  </ul>
+    </li>
+    <li><strong>K-nearest neighbors </strong>(Not implemented yet)</li>
+    <li><strong>CNN: </strong>We have implemented a simplistic baseline, and intend to implement a more sophisticated model later.</li>
+  </ul>
+</li>
+</ul>
+
+<br><br>
+<!-- Results -->
+<h2>Experiments and results</h2><br>
+
+<h3>Dataset</h3>
+<p>We use the Kuzushiji Recognition dataset from Kaggle. It consists of 38000 pages, with over 600,000 kuzushiji characters in total. There are over 43,000 different characters overall.
+</p>
+
+<p>For detection, we do a standard train-test split of 90% — 10%. For recognition, we use a 75% — 25% split.</p>
+
+<p>The dataset contains ground-truth Unicode values for each character, as well as bounding boxes for every character.</p><br>
+
+<h3>Kuzushiji Detection</h3>
+<p>For the baseline model, we use Contour Detection from OpenCV. To further get better detection, we use the U-Net approach. 
+</p>
+
+<p><strong>Implementation details: </strong>The U-net consists of 5 pairs of downsampling and upscaling layers, with skip connections from the downsampling layer to its corresponding upscaling layer.</p>
+
+<p>The output of this network is a binary classification over each pixel, as to whether it belongs to a character or not. Thus, it forms a mask over the characters in the image.</p>
+
+<p>We use the contours of the mask to calculate the center-point of each mask. </p>
+
+<p>We also draw a bounding box by drawing a rectangle around the extremes of each mask-blob along with a small margin.</p>
+
+<p>These bounding boxes are compared with the ground-truth bounding boxes, using a combination of the dice overlap loss and binary cross-entropy loss.</p>
+
+<p><strong>Training</strong><br>
+  The model is trained for 30 epochs, with the Adam optimizer. We see a steady decline in the training error, with a cumulative validation loss of ~0.18, from 0.6
+</p>
+
+<img src="training_graph1.png">
+
+<p><strong>Metrics: </strong><br>
+  We judge the accuracy of the U-Net detection using a modified version of the F-1 score from the official repository. Our modified score only checks for detection and not recognition.
+</p>
+
+<p>For the contours + CNN approach, we use the full F-1 score for evaluation.</p>
+
+<p><strong>Evaluation:</strong><br>
+  We evaluate the model on the test set. We see precision of 97.22%, recall of 96.95% and F-1 score of 0.95 This is opposed to the baseline F-1 score of 0.72 from the naive contour detection method.
+</p><br>
+
+<h3>Kuzushiji Recognition</h3>
+
+<p><strong>Setup:</strong><br>
+  We judge the accuracy of the U-Net detection using a modified version of the F-1 score from the official repository. Our modified score only checks for detection and not recognition.<br>
+  <a href="https://www.kaggle.com/basu369victor/kuzushiji-recognition-just-like-digit-recognition/output">https://www.kaggle.com/basu369victor/kuzushiji-recognition-just-like-digit-recognition/output</a>
+</p>
+
+<p>This approach has 3 main steps:</p>
+<ol>
+  <li>We preprocess the training data ( which already contains bounding boxes), by separating all bounding boxes into different segments and using binary thresholding on them. The min value for binary thresholding is 155. Almost all images have the script written in black, but to incorporate lighter shades and faded script, we use a value of 155.</li>
+  <li>We train a 5 layer CNN on this pre-processed data for 32 epochs.</li>
+  <li>For any image in test data, the bounding boxes are found using findContour function in OpenCV library, after which, the image is fed to the CNN for classification.</li>
+</ol> 
+
+<p><strong>Training:</strong><br>
+  The CNN is trained for 32 epochs, with the Adam optimizer. We see that training and validation loss decrease steadily and start stagnating around 30 epochs.
+</p>
+
+<img src="training_graph2.png">
+
+<p><strong>Evaluation:</strong><br>
+  We evaluate the character detection on the test set. The naive contour detection method achieves a baseline F-1 score of 0.72.
+</p>
+
+<p>The character recognition using CNN achieves an F-1 score of 0.8264 on the validation set after 32 epochs.</p><br>
+
+<h3>Qualitative Results</h3>
+
+<h4>U-Net Results</h4>
+
+<p><strong>Input:</strong></p>
+<img src="input_row1.png"><br>
+<img style="height: 437px; width:957px;" src="input_row2.png"><br>
+<img style="height: 437px; width:957px;" src="input_row3.png">
+
+<br><br><p><strong>Output: Success</strong></p>
+<img style="height: 442px; width:1179px;" src="output_row1.png"><br>
+<img  style="height: 442px; width:1179px;" src="output_row2.png"><br>
+<img src="output_row3.png"><br>
+
+<br><p><strong>Failure</strong></p>
+<img src="output_row4.png"><br>
+
+<p>As we can see from the image in the botton left, the U-Net seems to be biased towards the vertically aligned text and completely misses any text that does not adhere to the global vertical order.</p>
+
+<br><h3>Thresholding + Contour + CNN:</h3>
+<p>Our input image in training sample looks like: </p>
+
+<img  src="threshold1.png">
+
+<p>After segmentation of bounding boxes and thresholding, we get :</p>
+<img  src="threshold2.png">
+
+<p>On using novel images for character detection(using contours) and recognition(using trained CNN):</p>
+<img  src="threshold3.png">
+<img  src="threshold4.png">
+<img  src="threshold5.png">
+
+<br><h2>Conclusion and future work</h2>
+
+<p>We see that the baseline detection approach does not work too well. This is because the detection problem is hard. Since the pages contain the necessary text, as well as images, text that bleeds through from other pages, and other noise, it is difficult for a regular contour detection algorithm to work well.</p>
+
+<p>Additionally, the data contains 43,000+ different classes of text, it is hard for a simple CNN detector to accurately segment out the characters. Hence, we use a more sophisticated model, i.e. the U-net</p>
+
+<p>In the future, we can use a more sophisticated approach, like Kuronet, and have an end-to-end approach for directly recognizing the characters.</p>
+
+<h2>References</h2>
+<ul>
+  <li>Law, H., & Deng, J. (2018). Cornernet: Detecting objects as paired keypoints. In <em>Proceedings of the European Conference on Computer Vision (ECCV)</em> (pp. 734-750).<br><a href="https://arxiv.org/abs/1808.01244">https://arxiv.org/abs/1808.01244</a></li>
+  <li>Kuzushiji Recognition Kaggle HomePage: <br><a href="https://www.kaggle.com/c/kuzushiji-recognition">https://www.kaggle.com/c/kuzushiji-recognition</a></li>
+  <li>Duan, K., Bai, S., Xie, L., Qi, H., Huang, Q., & Tian, Q. (2019). CenterNet: Object Detection with Keypoint Triplets. <em>arXiv preprint arXiv:1904.08189</em><a href="https://arxiv.org/abs/1904.0785"> https://arxiv.org/abs/1904.0785</a></li>
+  <li>Lamb, A., Kitamoto, A., Ha, D., Yamamoto, K., Bober-Irizar, M., & Clanuwat, T. (2018). Deep Learning for Classical Japanese Literature<a href="https://arxiv.org/pdf/1812.01718.pdf">https://arxiv.org/pdf/1812.01718.pdf</a></li>
+  <li>Kuzushiji Detection Starter: <br><a href="https://www.kaggle.com/basu369victor/kuzushiji-recognition-just-like-digit-recognition">https://www.kaggle.com/basu369victor/kuzushiji-recognition-just-like-digit-recognition</a></li>
+  <li>Lowe, D. G. (1999, September). Object recognition from local scale-invariant features. In <em>iccv</em> (Vol. 99, No. 2, pp. 1150-1157).</li>
+  <li>Anh Duc Le,Tarin Clanuwat, and Asanobu Kitamoto (May 2019) A human-inspired recognition system for premodern Japanese historical documents<a href="https://arxiv.org/pdf/1905.05377.pdf">https://arxiv.org/pdf/1905.05377.pdf</a></li>
+  <li>KuroNet: Pre-Modern Japanese Kuzushiji Character Recognition with Deep Learning <a href="https://arxiv.org/abs/1910.09433">https://arxiv.org/abs/1910.09433</a></li>
+  <li>Recognition of Degraded Handwritten Characters Using Local Features <a href="https://ieeexplore.ieee.org/document/5277723">https://ieeexplore.ieee.org/document/5277723</a></li>
+</ul>
+
+
+  <hr>
+  <footer> 
+  <p>© Kaila Billie, Anant Joshi, Jeevanjot Singh, Sarmishta Velury</p>
+  </footer>
+</div>
+</div>
+
+<br><br>
+
+</body></html>

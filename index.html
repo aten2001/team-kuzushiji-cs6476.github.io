@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en"><head>  
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <title>Computer Vision Class Project
+  | Georgia Institute of Technology | Fall 2019: CS 6476</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+<!-- Le styles -->  
+  <link href="css/bootstrap.css" rel="stylesheet">
+<style>
+body {
+padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+}
+.vis {
+color: #3366CC;
+}
+.data {
+color: #FF9900;
+}
+/* Add a black background color to the top navigation */
+.topnav {
+  background-color: #333;
+  overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+</style>
+  
+<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements --><!--[if lt IE 9]>
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+</head>
+
+<body>
+
+<div class="topnav">
+  <a class="active" href="index.html">Project Proposal</a>
+  <a href="midtermupdate.html">Mid-term Project Update</a>
+  <a href="finalupdate.html">Final Project Update</a>
+  <a href="#about">Project Video</a>
+</div>
+
+<div class="container">
+<div class="page-header">
+
+<!-- Title and Name --> 
+<h1>Kuzushiji Character Recognition</h1> 
+<span style="font-size: 20px; line-height: 1.5em;"><strong>Kaila Billie, Anant Joshi, Jeevanjot Singh, Sarmishta Velury</strong></span><br>
+<span style="font-size: 18px; line-height: 1.5em;">Fall 2019 CS 6476 Computer Vision: Class Project</span><br>
+<span style="font-size: 18px; line-height: 1.5em;">Georgia Institute of Technology</span>
+<hr>
+
+<!-- Goal -->
+<h3>Abstract</h3>
+
+<p>Given an image, we propose a model to detect Kuzushiji characters present on the page and transcribe them to contemporary Kanji.</p>
+<br><br>
+<!-- figure -->
+<!-- <h3>Teaser figure</h3> -->
+<!-- A figure that conveys the main idea behind the project or the main application being addressed. -->
+<br><br>
+<!-- Main Illustrative Figure --> 
+<div style="text-align: center;">
+<img style="height: 700px;" alt="" src="mainfig.png">
+</div>
+
+<br><br>
+<!-- Introduction -->
+<h3>Introduction</h3>
+
+<h4>What is Kuzushiji?</h4>
+<p>Kuzushiji, is an old Japanese cursive writing style. Over 3 million books, written in Kuzushiji are preserved today, waiting to be transcribed. However, only 0.01% of the native Japanese population can read Kuzushiji, making the process of manual translation hard. </p>
+
+<figure style="text-align: center;">
+  <img src="img1.png">
+  <figcaption><strong>Fig 1:</strong>  Image with Kuzushiji characters. </figcaption>
+</figure>
+
+<h4>Challenges in Kuzushiji recognition</h4>
+<p><strong>Large number of character types:</strong> The total number of unique characters in the Kuzushiji dataset is over 4300 and the dataset is highly unbalanced.</p>
+<p><strong>Hentaigana:</strong> Many characters which can only be written a single way in modern Japanese can be written in many different ways in Kuzushiji.</p>
+<p><strong>Similarity between characters:</strong> A few characters in Kuzushiji look very similar and it is hard to tell what character it is without considering the above character as context.</p>
+<p><strong>Connectedness and overlap between characters:</strong> Kuzushiji was written in a cursive script, and hence in many cases, characters are connected or overlap which can make the recognition task difficult.</p>
+<p><strong>Various layouts:</strong> The layout of Kuzushiji characters (while normally arranged into columns) does not follow a single simple rule, so it is not always trivial to express the characters as a sequence.</p>
+
+<figure style="text-align: center;">
+  <img src="img2.png">
+  <figcaption><strong>Fig 2:</strong> Kuzushiji-Kanji samples (Top) and stroke-based Modern Kanji versions (Bottom)</figcaption>
+</figure>
+
+<br><br>
+<!-- Approach -->
+<h3>Approach</h3>
+<h4>Stages</h4>
+<p>The project is divided into 3 main stages.</p>
+<ul>
+<li><h4>Preprocessing</h4>
+  Our preprocessing pipeline is.
+  <ul>
+    <li>Drop null values</li>
+    <li>Standard preprocessing for CNNs. (Randomly rotate, crop and normalize image)</li>
+  </ul>
+</li>
+<li><h4>Character Detection</h4>
+Here, we list a few methods that we want to experiment with to perform character detection. The output of this phase would be bounding boxes around each character. As mentioned before, we expect this part to be the hardest of the project and therefore, we have decided to try a few different approaches.
+<ul>
+<li><h4>Classical Methods</h4>
+  <ul>
+    <li>SIFT Features</li>
+    We use SIFT to find key-points in images with ground-truth bounding boxes for each character.
+  </ul>
+</li>
+<li><h4>Machine Learning Methods</h4>
+<ul>
+<li>Thresholding + Contour Detection + Simple CNN</li>
+<li>Image Segmentation networks (e.g. YOLO, faster RCNN)</li>
+<li>CornerNet to detect corners of bounding boxes + CNNs</li>
+</ul>
+</li>
+
+</ul>
+</li>
+<li>
+  <h4>Post Processing</h4>
+  After extracting bounded characters, we intend to threshold and scale all the characters to a standard size.
+</li>
+<li><h4>Character Recognition</h4>
+  <ul>
+    <li>We use the ground-truth dataset and kuzushiji-kanji for classification</li>
+    <li><h4>Methods</h4>
+      <ul>
+        <li>K-nearest neighbours</li>
+        <li>CNN</li>
+      </ul>
+    </li>
+  </ul>
+</li>
+</ul>
+
+<br><br>
+<!-- Results -->
+<h3>Experiments and results</h3><br>
+
+<p><strong>Dataset:</strong><br>
+  We will use the Kuzushiji Character Recognition Dataset from the <a href="https://www.kaggle.com/c/kuzushiji-recognition/overview/description">competition hosted on Kaggle</a>. 
+</p><br>
+
+<p><strong>Existing codebase:</strong><br>
+  The Kaggle competition has many notebooks detailing various approaches and exploratory data analysis. While we have used these notebooks as starting point for planning our approach, we intend to implement most of it ourselves. One major notebook we will be using as our baseline is:<br>
+  <a href="https://www.kaggle.com/basu369victor/kuzushiji-recognition-just-like-digit-recognition">https://www.kaggle.com/basu369victor/kuzushiji-recognition-just-like-digit-recognition</a>
+</p>
+
+<p>We intend to use it as a baseline to compare our implementation results with the authors, while experimenting with different techniques, as mentioned in the approach.</p>
+
+<p>We also intend to use code from Python libraries such as OpenCV, PyTorch, and NumPy.</p><br>
+
+<p><strong>Evaluation Metrics</strong><br>
+  We define our success for the 2 main stages similar to the Kaggle competition.
+  <ol>
+  <li><strong>Detection:</strong> Predicting a point within the bounding box (Pointing game) <a href="https://www.kaggle.com/c/kuzushiji-recognition/overview/evaluation">https://www.kaggle.com/c/kuzushiji-recognition/overview/evaluation</a></li>
+  <li><strong>Recognition:</strong> We use F1 score as our metric for the recognition task.</li>
+</ol> 
+</p><br>
+
+<p><strong>Note: </strong>The Kaggle competition uses a modified F1 score to score the overall task. By this metric, the bounding box has to be pointed at correctly, before the prediction is checked. We split this to evaluate both the components of our pipeline independently.<br>
+  <a href="https://www.kaggle.com/c/kuzushiji-recognition/overview/evaluation">https://www.kaggle.com/c/kuzushiji-recognition/overview/evaluation</a><br></p>
+<br>
+
+<p><strong>Success Criterion</strong><br>
+  We intend to target a score of 0.5 on the modified F-1 metric as defined above.
+</p><br>
+
+<p><strong>Experiments:</strong><br>
+  We would experiment with trying out the approaches as detailed above for each stage in our pipeline. We will report individual results for each method, but report end-to-end results for a combination of the best methods for each stage.
+</p><br>
+
+<p><strong>Expected Outcome:</strong><br>
+ We expect kuzushiji detection to be the bottleneck in our pipeline. Several machine-learning methods exist for character recognition for languages with complex glyphs. However, detecting calligraphic characters, especially ones in close proximity of others, as well as those juxtaposed with images is a non-trivial task.
+</p>
+
+<br><br>
+
+<h3>References</h3>
+<ul>
+  <li>Law, H., & Deng, J. (2018). Cornernet: Detecting objects as paired keypoints. In <em>Proceedings of the European Conference on Computer Vision (ECCV)</em> (pp. 734-750).<br><a href="https://arxiv.org/abs/1808.01244">https://arxiv.org/abs/1808.01244</a></li>
+  <li>Kuzushiji Recognition Kaggle HomePage: <br><a href="https://www.kaggle.com/c/kuzushiji-recognition">https://www.kaggle.com/c/kuzushiji-recognition</a></li>
+  <li>Duan, K., Bai, S., Xie, L., Qi, H., Huang, Q., & Tian, Q. (2019). CenterNet: Object Detection with Keypoint Triplets. <em>arXiv preprint arXiv:1904.08189</em><a href="https://arxiv.org/abs/1904.0785"> https://arxiv.org/abs/1904.0785</a></li>
+  <li>Lamb, A., Kitamoto, A., Ha, D., Yamamoto, K., Bober-Irizar, M., & Clanuwat, T. (2018). Deep Learning for Classical Japanese Literature<a href="https://arxiv.org/pdf/1812.01718.pdf">https://arxiv.org/pdf/1812.01718.pdf</a></li>
+  <li>Kuzushiji Detection Starter: <br><a href="https://www.kaggle.com/basu369victor/kuzushiji-recognition-just-like-digit-recognition">https://www.kaggle.com/basu369victor/kuzushiji-recognition-just-like-digit-recognition</a></li>
+  <li>Lowe, D. G. (1999, September). Object recognition from local scale-invariant features. In <em>iccv</em> (Vol. 99, No. 2, pp. 1150-1157).</li>
+  <li>Anh Duc Le,Tarin Clanuwat, and Asanobu Kitamoto (May 2019) A human-inspired recognition system for premodern Japanese historical documents<a href="https://arxiv.org/pdf/1905.05377.pdf">https://arxiv.org/pdf/1905.05377.pdf</a></li>
+</ul>
+
+
+  <hr>
+  <footer> 
+  <p>© Kaila Billie, Anant Joshi, Jeevanjot Singh, Sarmishta Velury</p>
+  </footer>
+</div>
+</div>
+
+<br><br>
+
+</body></html>
